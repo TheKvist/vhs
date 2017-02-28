@@ -80,10 +80,13 @@ class FalViewHelper extends ResourcesFalViewHelper
 
     /**
      * @param array $record
+     * @param string $uidFieldName
+     * @param string $table
+     *
      * @return array
      * @throws \Exception
      */
-    public function getResources($record)
+    public function getResources($record, $uidFieldName = 't3ver_oid', $table = null)
     {
         return $this->getSlideRecords($record['uid']);
     }
@@ -99,7 +102,11 @@ class FalViewHelper extends ResourcesFalViewHelper
         // NB: we call parent::getResources intentionally, as to not call the overridden
         // method on this class. Calling $this->getResources() would yield wrong result
         // for the purpose of this method.
-        $resources = parent::getResources($pageRecord);
+        if (isset($pageRecord['_PAGES_OVERLAY']) && true === $pageRecord['_PAGES_OVERLAY']) {
+            $resources = parent::getResources($pageRecord, '_PAGES_OVERLAY_UID', 'pages_language_overlay');
+        } else {
+            $resources = parent::getResources($pageRecord);
+        }
         if (null !== $limit && count($resources) > $limit) {
             $resources = array_slice($resources, 0, $limit);
         }

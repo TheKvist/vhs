@@ -97,21 +97,29 @@ class FalViewHelper extends AbstractRecordResourceViewHelper
     }
 
     /**
+     * getResources
+     *
      * @param array $record
+     * @param string $uidFieldName
+     * @param string $table
+     *
      * @return array
      */
-    public function getResources($record)
+    public function getResources($record, $uidFieldName = 't3ver_oid', $table = null)
     {
         $databaseConnection = $this->getDatabaseConnection();
-        if (isset($record['t3ver_oid']) && (integer) $record['t3ver_oid'] !== 0) {
-            $sqlRecordUid = $record['t3ver_oid'];
+        if (null === $table) {
+            $table = $this->getTable();
+        }
+        if (isset($record[$uidFieldName]) && (integer) $record[$uidFieldName] !== 0) {
+            $sqlRecordUid = $record[$uidFieldName];
         } else {
             $sqlRecordUid = $record[$this->idField];
         }
 
         $fileReferences = [];
         if (empty($GLOBALS['TSFE']->sys_page) === false) {
-            $fileReferences = $this->getFileReferences($this->getTable(), $this->getField(), $sqlRecordUid);
+            $fileReferences = $this->getFileReferences($table, $this->getField(), $sqlRecordUid);
         } else {
             if ($GLOBALS['BE_USER']->workspaceRec['uid']) {
                 $versionWhere = 'AND sys_file_reference.deleted=0 AND (sys_file_reference.t3ver_wsid=0 OR ' .
@@ -124,7 +132,7 @@ class FalViewHelper extends AbstractRecordResourceViewHelper
             $references = $databaseConnection->exec_SELECTgetRows(
                 'uid',
                 'sys_file_reference',
-                'tablenames=' . $databaseConnection->fullQuoteStr($this->getTable(), 'sys_file_reference') .
+                'tablenames=' . $databaseConnection->fullQuoteStr($table, 'sys_file_reference') .
                     ' AND uid_foreign=' . (int) $sqlRecordUid .
                     ' AND fieldname=' . $databaseConnection->fullQuoteStr($this->getField(), 'sys_file_reference')
                     . $versionWhere,
