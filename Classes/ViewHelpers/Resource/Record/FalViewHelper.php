@@ -97,18 +97,22 @@ class FalViewHelper extends AbstractRecordResourceViewHelper
     }
 
     /**
+     * getResources
+     *
      * @param array $record
+     * @param string $uidFieldName
+     * @param string $table
+     *
      * @return array
      */
-    public function getResources($record)
+    public function getResources($record, $uidFieldName = 't3ver_oid', $table = null)
     {
         $databaseConnection = $this->getDatabaseConnection();
-        $table = $this->getTable();
-        if (isset($record['t3ver_oid']) && (integer) $record['t3ver_oid'] !== 0) {
-            $sqlRecordUid = $record['t3ver_oid'];
-        } elseif (isset($record['_PAGES_OVERLAY']) && true === $record['_PAGES_OVERLAY']) {
-            $sqlRecordUid = $record['_PAGES_OVERLAY_UID'];
-            $table = 'pages_language_overlay';
+        if (null === $table) {
+            $table = $this->getTable();
+        }
+        if (isset($record[$uidFieldName]) && (integer) $record[$uidFieldName] !== 0) {
+            $sqlRecordUid = $record[$uidFieldName];
         } else {
             $sqlRecordUid = $record[$this->idField];
         }
