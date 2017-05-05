@@ -112,8 +112,8 @@ class FalViewHelper extends AbstractRecordResourceViewHelper
             $table = $this->getTable();
         }
 
-        if (isset($GLOBALS['TCA']['tt_content']['ctrl']['translationSource'])) {
-            $uidFieldName = $GLOBALS['TCA']['tt_content']['ctrl']['translationSource'];
+        if (isset($GLOBALS['TCA'][$table]['ctrl']['translationSource'])) {
+            $uidFieldName = $GLOBALS['TCA'][$table]['ctrl']['translationSource'];
         }
 
         if (isset($record[$uidFieldName]) && (integer) $record[$uidFieldName] !== 0) {
