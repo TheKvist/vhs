@@ -100,17 +100,14 @@ class FalViewHelper extends AbstractRecordResourceViewHelper
      * getResources
      *
      * @param array $record
-     * @param string $uidFieldName
-     * @param string $table
      *
      * @return array
      */
-    public function getResources($record, $uidFieldName = 'l18n_parent', $table = null)
+    public function getResources($record)
     {
+        $uidFieldName = 'l18n_parent';
         $databaseConnection = $this->getDatabaseConnection();
-        if (null === $table) {
-            $table = $this->getTable();
-        }
+        $table = $this->getTable();
 
         if (isset($GLOBALS['TCA'][$table]['ctrl']['translationSource'])) {
             $uidFieldName = $GLOBALS['TCA'][$table]['ctrl']['translationSource'];
