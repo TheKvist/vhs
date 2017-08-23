@@ -73,6 +73,8 @@ class FalViewHelper extends ResourcesFalViewHelper
             $localisation = $pageRepository->getPageOverlay($record, $this->getCurrentLanguageUid());
             if (is_array($localisation)) {
                 $record = $localisation;
+                $record['uid'] = $record['_PAGES_OVERLAY_UID'];
+                $this->arguments['table'] = 'pages_language_overlay';
             }
         }
         return $record;
@@ -86,7 +88,7 @@ class FalViewHelper extends ResourcesFalViewHelper
      * @return array
      * @throws \Exception
      */
-    public function getResources($record, $uidFieldName = 't3ver_oid', $table = null)
+    public function getResources($record)
     {
         return $this->getSlideRecords($record['uid']);
     }
@@ -102,11 +104,8 @@ class FalViewHelper extends ResourcesFalViewHelper
         // NB: we call parent::getResources intentionally, as to not call the overridden
         // method on this class. Calling $this->getResources() would yield wrong result
         // for the purpose of this method.
-        if (isset($pageRecord['_PAGES_OVERLAY']) && true === $pageRecord['_PAGES_OVERLAY']) {
-            $resources = parent::getResources($pageRecord, '_PAGES_OVERLAY_UID', 'pages_language_overlay');
-        } else {
-            $resources = parent::getResources($pageRecord);
-        }
+        $resources = parent::getResources($pageRecord);
+
         if (null !== $limit && count($resources) > $limit) {
             $resources = array_slice($resources, 0, $limit);
         }
